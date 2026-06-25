@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Name — Photography</title>
+<style>
+  :root{
+    --navy:#0d1b2a;
+    --forest:#0d1b2a;
+    --cream:#0d1b2a;
+    --bg:#ffffff;
+    --line:rgba(13,27,42,0.15);
+    --muted:#5a6b78;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--cream);
+    font-family:'Helvetica Neue',Arial,sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- HEADER ---------- */
+  header{
+    position:fixed;
+    top:0;left:0;right:0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:28px 6vw;
+    z-index:100;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(4px);
+    border-bottom:1px solid var(--line);
+  }
+  .logo{
+    font-size:14px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    font-weight:600;
+  }
+  nav{display:flex;gap:32px;}
+  nav a{
+    color:var(--navy);
+    text-decoration:none;
+    font-size:13px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    opacity:0.85;
+    transition:opacity .25s;
+  }
+  nav a:hover{opacity:1;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:0 6vw;
+    position:relative;
+    border-bottom:1px solid var(--line);
+  }
+  .hero .eyebrow{
+    font-size:13px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:24px;
+  }
+  .hero h1{
+    font-size:clamp(48px,9vw,128px);
+    font-weight:300;
+    letter-spacing:-0.02em;
+    line-height:0.98;
+  }
+  .hero h1 em{
+    font-style:normal;
+    color:transparent;
+    -webkit-text-stroke:1.5px var(--navy);
+  }
+  .hero .sub{
+    margin-top:28px;
+    max-width:480px;
+    color:var(--muted);
+    font-size:16px;
+  }
+  .scroll-hint{
+    position:absolute;
+    bottom:40px;
+    left:6vw;
+    font-size:12px;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--muted);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .scroll-hint::after{
+    content:"";
+    width:1px;height:40px;
+    background:var(--muted);
+    animation:scrollLine 1.8s ease-in-out infinite;
+  }
+  @keyframes scrollLine{
+    0%{transform:scaleY(0);transform-origin:top;}
+    50%{transform:scaleY(1);transform-origin:top;}
+    50.01%{transform-origin:bottom;}
+    100%{transform:scaleY(0);transform-origin:bottom;}
+  }
+
+  /* ---------- CATEGORY NAV (sticky pill bar) ---------- */
+  .cat-bar{
+    position:sticky;
+    top:0;
+    z-index:50;
+    background:var(--bg);
+    border-bottom:1px solid var(--line);
+    padding:18px 6vw;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .cat-btn{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--cream);
+    padding:8px 18px;
+    border-radius:999px;
+    font-size:13px;
+    letter-spacing:0.04em;
+    cursor:pointer;
+    transition:all .25s;
+  }
+  .cat-btn:hover{border-color:var(--cream);}
+  .cat-btn.active{
+    background:var(--forest);
+    border-color:var(--forest);
+  }
+
+  /* ---------- GALLERY ---------- */
+  .gallery-section{
+    padding:80px 6vw 40px;
+  }
+  .gallery-section h2{
+    font-size:13px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:36px;
+    display:flex;
+    align-items:center;
+    gap:16px;
+  }
+  .gallery-section h2::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:var(--line);
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:4px;
+  }
+  .tile{
+    position:relative;
+    overflow:hidden;
+    aspect-ratio:4/5;
+    background:#f1f1ef;
+    cursor:pointer;
+  }
+  .tile img{
+    width:100%;height:100%;
+    object-fit:cover;
+    display:block;
+    transition:transform .6s ease;
+    filter:contrast(1.02);
+  }
+  .tile:hover img{transform:scale(1.05);}
+  .tile .cap{
+    position:absolute;
+    left:0;bottom:0;right:0;
+    padding:14px 16px;
+    background:linear-gradient(to top, rgba(255,255,255,0.92), transparent);
+    color:var(--navy);
+    font-size:12px;
+    letter-spacing:0.04em;
+    opacity:0;
+    transform:translateY(6px);
+    transition:all .3s ease;
+  }
+  .tile:hover .cap{opacity:1;transform:translateY(0);}
+  .tile.placeholder{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:1px dashed var(--line);
+    color:var(--muted);
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-align:center;
+    padding:20px;
+  }
+
+  @media(max-width:900px){
+    .grid{grid-template-columns:repeat(2,1fr);}
+    nav{display:none;}
+  }
+  @media(max-width:560px){
+    .grid{grid-template-columns:1fr;}
+  }
+
+  /* ---------- LIGHTBOX ---------- */
+  .lightbox{
+    position:fixed;
+    inset:0;
+    background:rgba(255,255,255,0.97);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+    padding:40px;
+  }
+  .lightbox.open{display:flex;}
+  .lightbox img{
+    max-width:100%;
+    max-height:85vh;
+    object-fit:contain;
+  }
+  .lightbox-close{
+    position:absolute;
+    top:30px;right:6vw;
+    color:var(--navy);
+    font-size:14px;
+    letter-spacing:0.1em;
+    cursor:pointer;
+    background:none;
+    border:1px solid var(--line);
+    padding:8px 16px;
+    border-radius:999px;
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about{
+    padding:120px 6vw;
+    border-top:1px solid var(--line);
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:60px;
+  }
+  .about h2{
+    font-size:clamp(28px,4vw,44px);
+    font-weight:300;
+    max-width:420px;
+  }
+  .about p{
+    color:var(--muted);
+    max-width:440px;
+    font-size:15px;
+  }
+  @media(max-width:800px){
+    .about{grid-template-columns:1fr;}
+  }
+
+  /* ---------- CONTACT / FOOTER ---------- */
+  footer{
+    padding:80px 6vw 40px;
+    border-top:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:24px;
+  }
+  footer .big-link{
+    font-size:clamp(28px,5vw,56px);
+    font-weight:300;
+    color:var(--navy);
+    text-decoration:none;
+    border-bottom:1px solid transparent;
+    transition:border-color .25s;
+  }
+  footer .big-link:hover{border-color:var(--navy);}
+  .meta{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    font-size:13px;
+    color:var(--muted);
+  }
+  .meta a{color:var(--muted);text-decoration:none;}
+  .meta a:hover{color:var(--cream);}
+  .copyright{
+    width:100%;
+    margin-top:60px;
+    font-size:11px;
+    color:var(--muted);
+    letter-spacing:0.05em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Your Name</div>
+  <nav>
+    <a href="#work">Work</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">Photographer — Podgorica, Montenegro</div>
+  <h1>Light, held<br><em>still.</em></h1>
+  <p class="sub">A collection of family, travel and documentary photography — moments kept exactly as they happened.</p>
+  <div class="scroll-hint">Scroll to view work</div>
+</section>
+
+<div class="cat-bar" id="catBar">
+  <button class="cat-btn active" data-filter="all">All work</button>
+  <button class="cat-btn" data-filter="family">Family & newborn</button>
+  <button class="cat-btn" data-filter="travel">Travel</button>
+  <button class="cat-btn" data-filter="street">Street & documentary</button>
+</div>
+
+<section class="gallery-section" id="work">
+
+  <h2>Family & newborn</h2>
+  <div class="grid" data-category="family">
+    <!-- Replace src + caption with your own photos. Add as many <div class="tile"> blocks as you like. -->
+    <div class="tile" data-cat="family">
+      <img src="images/family-01.jpg" alt="Family photo 1" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='Add image: images/family-01.jpg'">
+      <div class="cap">Morning light, 2026</div>
+    </div>
+    <div class="tile" data-cat="family">
+      <img src="images/family-02.jpg" alt="Family photo 2" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='Add image: images/family-02.jpg'">
+      <div class="cap">First days</div>
+    </div>
+    <div class="tile" data-cat="family">
+      <img src="images/family-03.jpg" alt="Family photo 3" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='Add image: images/family-03.jpg'">
+      <div class="cap">Quiet hands</div>
+    </div>
+  </div>
+
+  <h2 style="margin-top:80px;">Travel</h2>
+  <div class="grid" data-category="travel">
+    <div class="tile" data-cat="travel">
+      <img src="images/travel-01.jpg" alt="Travel photo 1" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='Add image: images/travel-01.jpg'">
+      <div class="cap">Bay of Kotor</div>
+    </div>
+    <div class="tile" data-cat="travel">
+      <img src="images/travel-02.jpg" alt="Travel photo 2" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='Add image: images/travel-02.jpg'">
+      <div class="cap">Mountain road</div>
+    </div>
+    <div class="tile" data-cat="travel">
+      <img src="images/travel-03.jpg" alt="Travel photo 3" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='Add image: images/travel-03.jpg'">
+      <div class="cap">Old town, dusk</div>
+    </div>
+  </div>
+
+  <h2 style="margin-top:80px;">Street & documentary</h2>
+  <div class="grid" data-category="street">
+    <div class="tile" data-cat="street">
+      <img src="images/street-01.jpg" alt="Street photo 1" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='Add image: images/street-01.jpg'">
+      <div class="cap">Market square</div>
+    </div>
+    <div class="tile" data-cat="street">
+      <img src="images/street-02.jpg" alt="Street photo 2" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='Add image: images/street-02.jpg'">
+      <div class="cap">Rain, Tuesday</div>
+    </div>
+    <div class="tile" data-cat="street">
+      <img src="images/street-03.jpg" alt="Street photo 3" onerror="this.parentElement.classList.add('placeholder');this.remove();this.parentElement.innerHTML='Add image: images/street-03.jpg'">
+      <div class="cap">Waiting</div>
+    </div>
+  </div>
+
+</section>
+
+<section class="about" id="about">
+  <h2>I photograph what's real, not what's arranged.</h2>
+  <p>Based in Podgorica, working across Montenegro and beyond. My work moves between quiet family moments, the textures of travel, and unscripted street life — always looking for the frame that needed no direction.</p>
+</section>
+
+<footer id="contact">
+  <a href="mailto:you@example.com" class="big-link">you@example.com</a>
+  <div class="meta">
+    <span>Podgorica, Montenegro</span>
+    <a href="#">Instagram</a>
+    <a href="#">Behance</a>
+  </div>
+  <div class="copyright">© 2026 Your Name. All images reserved.</div>
+</footer>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">Close ✕</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<script>
+  // ----- Category filtering -----
+  const catBtns = document.querySelectorAll('.cat-btn');
+  const tiles = document.querySelectorAll('.tile');
+  const groups = document.querySelectorAll('.gallery-section h2');
+
+  catBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      catBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+
+      document.querySelectorAll('.grid').forEach(grid => {
+        const category = grid.dataset.category;
+        const show = filter === 'all' || filter === category;
+        grid.style.display = show ? 'grid' : 'none';
+        const heading = grid.previousElementSibling;
+        if (heading && heading.tagName === 'H2') heading.style.display = show ? 'flex' : 'none';
+      });
+    });
+  });
+
+  // ----- Lightbox -----
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+
+  document.querySelectorAll('.tile img').forEach(img => {
+    img.addEventListener('click', () => {
+      lightboxImg.src = img.src;
+      lightbox.classList.add('open');
+    });
+  });
+
+  document.getElementById('lightboxClose').addEventListener('click', () => {
+    lightbox.classList.remove('open');
+  });
+  lightbox.addEventListener('click', e => {
+    if (e.target === lightbox) lightbox.classList.remove('open');
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') lightbox.classList.remove('open');
+  });
+</script>
+
+</body>
+</html>
